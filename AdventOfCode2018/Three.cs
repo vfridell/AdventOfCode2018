@@ -64,6 +64,19 @@ namespace AdventOfCode2018
             if (other.Y > Y + Height) return false;
             return true;
         }
+
+        public List<Point> GetPoints()
+        {
+            List<Point> resultList = new List<Point>();
+            for (int x = X; x < X + Width; x++)
+            {
+                for (int y = Y; y < Y + Height; y++)
+                {
+                    resultList.Add(new Point(x, y));
+                }
+            }
+            return resultList;
+        }
     }
 
     public class Point : IComparable<Point>
@@ -100,6 +113,8 @@ namespace AdventOfCode2018
                 return 1;
             }
         }
+        public override string ToString() => $"({X}, {Y})";
+            
     }
 
     public class Three
