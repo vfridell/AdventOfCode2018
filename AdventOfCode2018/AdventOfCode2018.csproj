@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Eight.cs" />
+    <Compile Include="EightInput.cs" />
     <Compile Include="Five.cs" />
     <Compile Include="Four.cs" />
     <Compile Include="One.cs" />
