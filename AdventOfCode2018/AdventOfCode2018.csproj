@@ -46,6 +46,7 @@
     <Compile Include="EightInput.cs" />
     <Compile Include="Five.cs" />
     <Compile Include="Four.cs" />
+    <Compile Include="Nine.cs" />
     <Compile Include="One.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
