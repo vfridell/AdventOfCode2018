@@ -77,6 +77,23 @@ namespace AdventOfCode2018
             }
             return resultList;
         }
+
+        public override bool Equals(object obj)
+        {
+            Rect other = obj as Rect;
+            if (null == other) return false;
+            return Equals(other);
+        }
+
+        public bool Equals(Rect other) => Point.Equals(other.Point) && Width == other.Width && Height == other.Height;
+
+        public override int GetHashCode()
+        {
+            int hash = Point.GetHashCode();
+            hash = (hash * 397) ^ Width.GetHashCode();
+            hash = (hash * 397) ^ Height.GetHashCode();
+            return hash;
+        }
     }
 
     public class Point : IComparable<Point>
@@ -165,7 +182,7 @@ namespace AdventOfCode2018
 
         public static void Part2()
         {
-            QuadTree quadTree = QuadTree.GetNew(2000, 50);
+            QuadTreeThree quadTree = QuadTreeThree.GetNew(2000, 50);
             List<FabricSquareClaim> claimObjects = new List<FabricSquareClaim>();
             foreach (string claimString in Input)
             {
@@ -178,14 +195,14 @@ namespace AdventOfCode2018
             Console.WriteLine($"The ID of the correct FSQ is {correctFSQ.Id}");
         }
 
-        public class QuadTree
+        public class QuadTreeThree
         {
-            private QuadTree() { }
+            private QuadTreeThree() { }
 
             public Node Root { get; set; }
-            public static QuadTree GetNew(int squareSideLength, int smallestSquareArea)
+            public static QuadTreeThree GetNew(int squareSideLength, int smallestSquareArea)
             {
-                QuadTree q = new QuadTree();
+                QuadTreeThree q = new QuadTreeThree();
                 Rect rootRect = new Rect(0, 0, squareSideLength, squareSideLength);
                 q.Root = new Node(rootRect, smallestSquareArea);
                 return q;

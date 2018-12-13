@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2018
 {
-    class Program
+    public interface IRectangle 
     {
-        static void Main(string[] args)
-        {
-            Ten.Part1();
-        }
+        Rect Rectangle { get; }
     }
 }
