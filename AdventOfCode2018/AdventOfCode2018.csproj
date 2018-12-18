@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Eight.cs" />
     <Compile Include="EightInput.cs" />
+    <Compile Include="Eleven.cs" />
     <Compile Include="Five.cs" />
     <Compile Include="Four.cs" />
     <Compile Include="IRectangle.cs" />
