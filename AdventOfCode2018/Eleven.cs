@@ -29,7 +29,7 @@ namespace AdventOfCode2018
             Console.WriteLine($"Max power is {maxPower} at coordinate {fuelCellWithMax}");
         }
 
-        public static void Part2a()
+        public static void Part2()
         {
             Rect refooct = new Rect(1, 1, 300, 300);
             List<Rect> foorects = RectSplit(refooct);
@@ -64,41 +64,6 @@ namespace AdventOfCode2018
                 maxPowerBySize.Add(s, rectWithMax);
                 Console.WriteLine($"Max power for size {s} is {maxPower} with rect {rectWithMax}");
             }
-
-            Console.WriteLine($"Max power is {maxPower} with rect {rectWithMax}");
-        }
-
-        public static void Part2()
-        {
-            Rect refooct = new Rect(1, 1, 300, 300);
-            List<Rect> foorects = RectSplit(refooct);
-
-
-            Dictionary<Point, int> powerLevels = new Dictionary<Point, int>();
-            Dictionary<Rect, int> powerLevelRects = new Dictionary<Rect, int>();
-            int maxPower = int.MinValue;
-            Rect rectWithMax = null;
-            for (int x = 1; x <= 300; x++)
-            {
-                for (int y = 1; y <= 300; y++)
-                {
-                    int minSide = Math.Min(300 - x, 300 - y);
-                    for (int s = 3; s <= minSide; s++)
-                    {
-                        Console.WriteLine($"Doing size {s}, point {x},{y}");
-                        Rect rect = new Rect(x, y, s, s);
-                        int rectPower = 0;
-                        foreach (Rect subRect in RectSplit(rect))
-                        {
-                            rectPower += PowerLevel(subRect, powerLevels, powerLevelRects);
-                        }
-                        maxPower = Math.Max(rectPower, maxPower);
-                        if (maxPower == rectPower) rectWithMax = rect;
-                    }
-                }
-            }
-
-            Console.WriteLine($"Max power is {maxPower} with rect {rectWithMax}");
         }
 
         public static List<Rect> RectSplit(Rect rect)
