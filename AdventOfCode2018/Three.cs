@@ -94,6 +94,9 @@ namespace AdventOfCode2018
             hash = (hash * 397) ^ Height.GetHashCode();
             return hash;
         }
+
+        public override string ToString() => $"{Point},{SmallestSide}";
+            
     }
 
     public class Point : IComparable<Point>
