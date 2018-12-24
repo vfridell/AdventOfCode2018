@@ -10,7 +10,7 @@ namespace AdventOfCode2018
     {
         static void Main(string[] args)
         {
-            Twelve.Part2();
+            Thirteen.Part2();
         }
     }
 }

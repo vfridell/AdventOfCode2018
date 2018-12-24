@@ -57,9 +57,11 @@
     <Compile Include="Seven.cs" />
     <Compile Include="Six.cs" />
     <Compile Include="Ten.cs" />
+    <Compile Include="Thirteen.cs" />
     <Compile Include="Three.cs" />
     <Compile Include="Twelve.cs" />
     <Compile Include="Two.cs" />
+    <Compile Include="Vector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
