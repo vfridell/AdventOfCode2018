@@ -58,6 +58,7 @@
     <Compile Include="Six.cs" />
     <Compile Include="Ten.cs" />
     <Compile Include="Three.cs" />
+    <Compile Include="Twelve.cs" />
     <Compile Include="Two.cs" />
   </ItemGroup>
   <ItemGroup>
