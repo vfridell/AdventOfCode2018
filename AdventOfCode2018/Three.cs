@@ -65,14 +65,25 @@ namespace AdventOfCode2018
             return true;
         }
 
-        public List<Point> GetPoints()
+        public enum PointIterationDirection { LeftRight, UpDown };
+
+        public List<Point> GetPoints(PointIterationDirection direction = PointIterationDirection.UpDown)
         {
             List<Point> resultList = new List<Point>();
-            for (int x = X; x < X + Width; x++)
+            if (direction == PointIterationDirection.UpDown)
+            {
+                for (int x = X; x < X + Width; x++)
+                {
+                    for (int y = Y; y < Y + Height; y++)
+                        resultList.Add(new Point(x, y));
+                }
+            }
+            else
             {
                 for (int y = Y; y < Y + Height; y++)
                 {
-                    resultList.Add(new Point(x, y));
+                    for (int x = X; x < X + Width; x++)
+                        resultList.Add(new Point(x, y));
                 }
             }
             return resultList;

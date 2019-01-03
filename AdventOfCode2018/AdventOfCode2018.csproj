@@ -57,6 +57,8 @@
     <Compile Include="QuadTree.cs" />
     <Compile Include="QuadTreeNode.cs" />
     <Compile Include="Seven.cs" />
+    <Compile Include="Seventeen.cs" />
+    <Compile Include="SeventeenInputs.cs" />
     <Compile Include="Six.cs" />
     <Compile Include="Sixteen.cs" />
     <Compile Include="SixteenInput.cs" />
