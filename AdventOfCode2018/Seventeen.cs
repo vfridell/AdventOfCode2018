@@ -11,7 +11,9 @@ namespace AdventOfCode2018
     {
         public static void Part1()
         {
-            List<string> Input = SeventeenInputs.TestInput;
+            List<string> Input;
+            //Input = SeventeenInputs.TestInput;
+            Input = SeventeenInputs.FullInput;
             Slice slice = Slice.GetSlice(Input);
             Console.Write(slice.GetPrintableString());
 
@@ -35,6 +37,7 @@ namespace AdventOfCode2018
             //"y=13, x=498..504",
             Regex regex = new Regex(@"([xy])=([0-9]+), ([xy])=([0-9]+)\.\.([0-9]+)");
             Slice slice = new Slice();
+            slice._cells.Add(slice._waterSource, new WaterSourceCell());
             foreach(string s in input)
             {
                 MatchCollection mc = regex.Matches(s);
@@ -42,7 +45,6 @@ namespace AdventOfCode2018
                 int lineHorizonPos = int.Parse(mc[0].Groups[2].Value);
                 int lineStartPos = int.Parse(mc[0].Groups[4].Value);
                 int lineEndPos = int.Parse(mc[0].Groups[5].Value);
-
                 if (vertical)
                 {
                     for(int y = lineStartPos; y <= lineEndPos; y++) 
@@ -106,6 +108,15 @@ namespace AdventOfCode2018
         }
     }
 
+    internal class WaterSourceCell : Cell
+    {
+        public override Vector GetWaterVector(Vector incoming)
+        {
+            throw new NotImplementedException();
+        }
+        public override string ToString() => "+";
+    }
+
     public abstract class Cell
     {
         public Cell[] Neighbors = new Cell[4];
@@ -142,12 +153,14 @@ namespace AdventOfCode2018
 
         public override Vector GetWaterVector(Vector incoming)
         {
+            throw new NotImplementedException();
+            /*
             if (incoming.Velocity.X != 0 && incoming.Velocity.Y != 0) throw new Exception("water can't move diagonal");
 
             if (IsWet && incoming.Velocity.Y == 1) return new Vector(incoming.Position, new Point(GetXVec(), 0));
             if (!IsWet && incoming.Velocity.Y == 1) return incoming;
             if ()
-            
+            */
         }
         public override string ToString() => ".";
     }
