@@ -65,6 +65,12 @@ namespace AdventOfCode2018
             return true;
         }
 
+        internal bool Contains(Point point)
+        {
+            if (point.X < X || point.Y < Y || point.X > X + Width || point.Y > Y + Height) return false;
+            return true;
+        }
+
         public enum PointIterationDirection { LeftRight, UpDown };
 
         public List<Point> GetPoints(PointIterationDirection direction = PointIterationDirection.UpDown)

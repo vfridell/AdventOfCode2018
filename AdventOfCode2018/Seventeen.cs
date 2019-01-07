@@ -11,13 +11,53 @@ namespace AdventOfCode2018
     {
         public static void Part1()
         {
+            string foo = "a";
+            string bar = null;
+            int comp = foo.CompareTo(bar);
+            comp = bar.CompareTo(foo);
+
+
+
             List<string> Input;
             //Input = SeventeenInputs.TestInput;
             Input = SeventeenInputs.FullInput;
             Slice slice = Slice.GetSlice(Input);
-            Console.Write(slice.GetPrintableString());
+            //Console.Write(slice.GetPrintableString());
 
             
+        }
+    }
+
+    public class Water
+    {
+        public Point CurrentPosition { get; set; }
+        public Point LastDownPosition { get; set; }
+        public HashSet<Point> Visited { get; set; } = new HashSet<Point>();
+
+        public void Travel(Slice slice)
+        {
+            CurrentPosition = slice.WaterSource;
+            while(slice.Rect.Contains(CurrentPosition))
+            {
+                if(slice.Cells[CurrentPosition].Down.WaterPermiable)
+                {
+                    LastDownPosition = CurrentPosition;
+                    CurrentPosition = new Point(CurrentPosition.X, CurrentPosition.Y + 1);
+                }
+                else if (slice.Cells[CurrentPosition].Left.WaterPermiable && !Visited.Contains(new Point(CurrentPosition.X - 1, CurrentPosition.Y)))
+                {
+                    CurrentPosition = new Point(CurrentPosition.X - 1, CurrentPosition.Y);
+                }
+                else if (slice.Cells[CurrentPosition].Right.WaterPermiable && !Visited.Contains(new Point(CurrentPosition.X + 1, CurrentPosition.Y)))
+                {
+                    CurrentPosition = new Point(CurrentPosition.X + 1, CurrentPosition.Y);
+                }
+                else
+                {
+                    CurrentPosition = LastDownPosition;
+                }
+                Visited.Add(CurrentPosition);
+            }
         }
     }
 
@@ -25,11 +65,14 @@ namespace AdventOfCode2018
     {
         private Slice() { }
 
-        private Dictionary<Point, Cell> _cells = new Dictionary<Point, Cell>();
+        public Dictionary<Point, Cell> Cells = new Dictionary<Point, Cell>();
         private Point _min;
         private Point _max;
         private Rect _rect;
         private Point _waterSource = new Point(500, 0);
+
+        public Point WaterSource => _waterSource;
+        public Rect Rect => _rect;
 
         public static Slice GetSlice(List<string> input)
         {
@@ -37,7 +80,7 @@ namespace AdventOfCode2018
             //"y=13, x=498..504",
             Regex regex = new Regex(@"([xy])=([0-9]+), ([xy])=([0-9]+)\.\.([0-9]+)");
             Slice slice = new Slice();
-            slice._cells.Add(slice._waterSource, new WaterSourceCell());
+            slice.Cells.Add(slice._waterSource, new WaterSourceCell(slice._waterSource));
             foreach(string s in input)
             {
                 MatchCollection mc = regex.Matches(s);
@@ -50,8 +93,8 @@ namespace AdventOfCode2018
                     for(int y = lineStartPos; y <= lineEndPos; y++) 
                     {
                         Point p = new Point(lineHorizonPos, y);
-                        if (slice._cells.ContainsKey(p)) continue;
-                        slice._cells.Add(p, new ClayCell());
+                        if (slice.Cells.ContainsKey(p)) continue;
+                        slice.Cells.Add(p, new ClayCell(p));
                     }
                 }
                 else
@@ -59,19 +102,19 @@ namespace AdventOfCode2018
                     for (int x = lineStartPos; x <= lineEndPos; x++)
                     {
                         Point p = new Point(x, lineHorizonPos);
-                        if (slice._cells.ContainsKey(p)) continue;
-                        slice._cells.Add(p, new ClayCell());
+                        if (slice.Cells.ContainsKey(p)) continue;
+                        slice.Cells.Add(p, new ClayCell(p));
                     }
                 }
             }
 
-            slice._min = new Point(slice._cells.Min(kvp => kvp.Key.X), slice._cells.Min(kvp => kvp.Key.Y));
-            slice._max = new Point(slice._cells.Max(kvp => kvp.Key.X), slice._cells.Max(kvp => kvp.Key.Y));
+            slice._min = new Point(slice.Cells.Min(kvp => kvp.Key.X), slice.Cells.Min(kvp => kvp.Key.Y));
+            slice._max = new Point(slice.Cells.Max(kvp => kvp.Key.X), slice.Cells.Max(kvp => kvp.Key.Y));
             slice._rect = new Rect(slice._min.X - 1, slice._min.Y - 1, (slice._max.X + 2) - (slice._min.X - 1), (slice._max.Y + 2) - (slice._min.Y - 1));
             foreach(Point p in slice._rect.GetPoints())
             {
-                if (!slice._cells.ContainsKey(p))
-                    slice._cells.Add(p, new SandCell());
+                if (!slice.Cells.ContainsKey(p))
+                    slice.Cells.Add(p, new SandCell(p));
             }
 
             foreach(Point p in slice._rect.GetPoints())
@@ -81,11 +124,11 @@ namespace AdventOfCode2018
                     p.X > slice._max.X ||
                     p.Y > slice._max.Y) continue;
 
-                Cell cell = slice._cells[p];
-                cell.Left = slice._cells[new Point(p.X - 1, p.Y)];
-                cell.Right = slice._cells[new Point(p.X + 1, p.Y)];
-                cell.Up = slice._cells[new Point(p.X, p.Y - 1)];
-                cell.Down = slice._cells[new Point(p.X, p.Y + 1)];
+                Cell cell = slice.Cells[p];
+                cell.Left = slice.Cells[new Point(p.X - 1, p.Y)];
+                cell.Right = slice.Cells[new Point(p.X + 1, p.Y)];
+                cell.Up = slice.Cells[new Point(p.X, p.Y - 1)];
+                cell.Down = slice.Cells[new Point(p.X, p.Y + 1)];
             }
             return slice;
         }
@@ -102,66 +145,62 @@ namespace AdventOfCode2018
                     sb.Append("\n");
                     yprev = p.Y;
                 }
-                sb.Append(_cells[p]);
+                sb.Append(Cells[p]);
             }
             return sb.ToString();
         }
     }
 
-    internal class WaterSourceCell : Cell
-    {
-        public override Vector GetWaterVector(Vector incoming)
-        {
-            throw new NotImplementedException();
-        }
-        public override string ToString() => "+";
-    }
+
 
     public abstract class Cell
     {
+        public Cell(Point p) { Position = p; }
+        public Point Position { get; set; }
         public Cell[] Neighbors = new Cell[4];
         public Cell Left { get { return Neighbors[0]; } set { Neighbors[0] = value; } }
         public Cell Right { get { return Neighbors[0]; } set { Neighbors[1] = value; } }
         public Cell Up { get { return Neighbors[0]; } set { Neighbors[2] = value; } }
         public Cell Down { get { return Neighbors[0]; } set { Neighbors[3] = value; } }
 
-        public bool IsWet { get; set; }
-        public bool WasWet { get; set; }
-        public bool GoLeft { get; set; }
-        public int GetXVec()
-        {
-            GoLeft = !GoLeft;
-            if (GoLeft) return -1;
-            else return 1;
-        }
+        public abstract bool WaterPermiable { get; }
 
-        public abstract Vector GetWaterVector(Vector incoming);
+        public void Accept(Water water)
+        {
+            if (!WaterPermiable) return;
+
+            water.CurrentPosition = Position;
+            if (Down.WaterPermiable) Down.Accept(water);
+            if (Right.WaterPermiable) Right.Accept(water);
+            if (Left.WaterPermiable) Left.Accept(water);
+        }
+    }
+    public class WaterSourceCell : Cell
+    {
+        public WaterSourceCell(Point p) : base(p) { }
+        public override bool WaterPermiable => true;
+        public override string ToString() => "+";
     }
 
     public class ClayCell : Cell
     {
-        public override Vector GetWaterVector(Vector incoming)
-        {
-            throw new NotImplementedException();
-        }
+        public ClayCell(Point p) : base(p) { }
+        public override bool WaterPermiable => false;
 
         public override string ToString() => "#";
     }
 
     public class SandCell : Cell
     {
-
-        public override Vector GetWaterVector(Vector incoming)
-        {
-            throw new NotImplementedException();
-            /*
-            if (incoming.Velocity.X != 0 && incoming.Velocity.Y != 0) throw new Exception("water can't move diagonal");
-
-            if (IsWet && incoming.Velocity.Y == 1) return new Vector(incoming.Position, new Point(GetXVec(), 0));
-            if (!IsWet && incoming.Velocity.Y == 1) return incoming;
-            if ()
-            */
-        }
+        public SandCell(Point p) : base(p) { }
+        public override bool WaterPermiable => true;
         public override string ToString() => ".";
+    }
+
+    public class StandingWaterCell : Cell
+    {
+        public StandingWaterCell(Point p) : base(p) { }
+        public override bool WaterPermiable => false;
+        public override string ToString() => "~";
     }
 }
